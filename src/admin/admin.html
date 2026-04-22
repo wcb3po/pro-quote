@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quote Form Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #1e88e5;
+    --ink: #0d1117;
+    --sub-ink: #1c2128;
+    --paper: #f6f7f9;
+    --surface: #ffffff;
+    --line: #e2e4e9;
+    --muted: #6b6f76;
+    --danger: #d1453b;
+    --ok: #2d7d4a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  /* TOP BAR */
+  .topbar {
+    background: var(--ink);
+    color: white;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+  }
+  .brand span { color: var(--accent); }
+  .topbar-actions { margin-left: auto; display: flex; gap: 8px; }
+  .btn {
+    background: var(--accent);
+    color: white;
+    border: 0;
+    padding: 9px 16px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { filter: brightness(1.1); }
+  .btn.ghost {
+    background: transparent;
+    color: white;
+    border: 1px solid rgba(255,255,255,0.25);
+  }
+  .btn.ghost:hover { background: rgba(255,255,255,0.08); }
+  .btn.danger { background: var(--danger); }
+  .btn.small { padding: 5px 10px; font-size: 0.78rem; }
+  .btn.subtle {
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn.subtle:hover { background: white; }
+
+  /* LAYOUT */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 56px);
+  }
+  .sidebar {
+    background: var(--sub-ink);
+    padding: 20px 0;
+  }
+  .nav-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 22px;
+    background: transparent;
+    color: rgba(255,255,255,0.72);
+    border: 0;
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+  }
+  .nav-item:hover { color: white; background: rgba(255,255,255,0.04); }
+  .nav-item.active {
+    color: white;
+    border-left-color: var(--accent);
+    background: rgba(255,255,255,0.06);
+  }
+  .nav-section {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.4);
+    padding: 20px 22px 8px;
+    font-weight: 600;
+  }
+
+  .main { padding: 32px 40px; max-width: 1100px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 2rem;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+  }
+  .panel > .intro {
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+  h3 { font-size: 1rem; font-weight: 600; margin: 0 0 8px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px;
+    margin-bottom: 14px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .card-header .grip {
+    color: var(--muted);
+    cursor: grab;
+    font-size: 1.1rem;
+    user-select: none;
+  }
+  .card-header h2 { margin: 0; flex: 1; }
+
+  .field { margin-bottom: 14px; }
+  .field-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  label.lbl {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  input[type="text"], input[type="number"], input[type="color"], select, textarea {
+    width: 100%;
+    padding: 9px 11px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 0.92rem;
+    font-family: inherit;
+    background: white;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
+  }
+  input[type="color"] { height: 40px; padding: 3px; cursor: pointer; }
+  textarea { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; min-height: 120px; }
+
+  .option-row, .input-row, .tier-row {
+    display: grid;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: var(--paper);
+    border-radius: 6px;
+    margin-bottom: 6px;
+  }
+  .option-row { grid-template-columns: 1fr 1fr auto; }
+  .input-row  { grid-template-columns: 1fr 2fr 1fr auto; }
+  .tier-row   { grid-template-columns: 1fr 1fr auto; }
+
+  .pricing-section {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 12px;
+  }
+  .pricing-section h3 { margin-bottom: 10px; }
+  .pricing-type-switch {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .pricing-type-switch button {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-family: inherit;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .pricing-type-switch button.active {
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+  }
+
+  .matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 10px;
+  }
+  .matrix-table th, .matrix-table td {
+    border: 1px solid var(--line);
+    padding: 6px 8px;
+    text-align: left;
+  }
+  .matrix-table th { background: var(--paper); font-weight: 600; }
+  .matrix-table input { padding: 5px 6px; font-size: 0.82rem; }
+
+  .empty-state {
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    border: 1.5px dashed var(--line);
+    border-radius: 10px;
+    background: white;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--ink);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+    z-index: 100;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.ok { background: var(--ok); }
+  .toast.err { background: var(--danger); }
+
+  .info-box {
+    background: color-mix(in srgb, var(--accent) 8%, white);
+    border-left: 3px solid var(--accent);
+    padding: 12px 14px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    font-size: 0.88rem;
+    color: var(--sub-ink);
+  }
+  .info-box code {
+    background: rgba(0,0,0,0.06);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+  }
+
+  details { margin-top: 10px; }
+  summary {
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 6px 0;
+  }
+  summary:hover { color: var(--ink); }
+
+  .preview-frame {
+    width: 100%;
+    height: 760px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: white;
+  }
+
+  .inline-actions { display: flex; gap: 6px; align-items: center; }
+
+  .pill {
+    display: inline-block;
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--paper);
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .pill.ok  { background: #e0f3e6; color: var(--ok); }
+  .pill.err { background: #fbe3e1; color: var(--danger); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Quote<span>Kit</span> Admin</div>
+  <span class="pill" id="savedState">● unsaved</span>
+  <div class="topbar-actions">
+    <button class="btn ghost" id="resetBtn">Reset to defaults</button>
+    <button class="btn ghost" id="importBtn">Import JSON</button>
+    <button class="btn ghost" id="exportBtn">Export JSON</button>
+    <button class="btn" id="saveBtn">Save & Preview</button>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="nav-section">Configure</div>
+    <button class="nav-item active" data-panel="branding">Branding</button>
+    <button class="nav-item"        data-panel="theme">Theme & Fonts</button>
+    <button class="nav-item"        data-panel="services">Services & Pricing</button>
+    <button class="nav-item"        data-panel="discounts">Discounts</button>
+    <button class="nav-item"        data-panel="packages">Packages</button>
+    <button class="nav-item"        data-panel="leads">Lead Capture</button>
+    <div class="nav-section">Output</div>
+    <button class="nav-item" data-panel="preview">Live Preview</button>
+    <button class="nav-item" data-panel="export">Export / Embed</button>
+    <button class="nav-item" data-panel="help">How to customize</button>
+  </nav>
+
+  <main class="main">
+
+    <!-- BRANDING -->
+    <section class="panel active" data-panel="branding">
+      <h1>Branding</h1>
+      <p class="intro">Identity shown on the customer-facing form. For colors and fonts, see <strong>Theme & Fonts</strong>.</p>
+      <div class="card">
+        <div class="field">
+          <label class="lbl">Business name</label>
+          <input type="text" id="brand_name" placeholder="e.g. Clean Coast Pressure Washing">
+        </div>
+        <div class="field">
+          <label class="lbl">Tagline / subtitle</label>
+          <input type="text" id="brand_tagline" placeholder="e.g. Select the services you need. Get an estimate in seconds.">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="lbl">Currency symbol</label>
+            <input type="text" id="brand_symbol" maxlength="3" placeholder="$">
+          </div>
+          <div class="field">
+            <label class="lbl">Currency code</label>
+            <input type="text" id="brand_currency" maxlength="4" placeholder="USD">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THEME & FONTS -->
+    <section class="panel" data-panel="theme">
+      <h1>Theme & Fonts</h1>
+      <p class="intro">Pick a preset to set the whole look at once, or fine-tune individual colors and fonts below.</p>
+
+      <div class="card">
+        <h3 style="margin-bottom:14px;">Presets</h3>
+        <div id="themePresets" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;"></div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:14px;">Colors</h3>
+        <p style="font-size:0.85rem;color:var(--muted);margin-top:-6px;margin-bottom:14px;">
+          Tip: for dark mode, set <strong>paper</strong> (background) dark and <strong>ink</strong> (text) light.
+        </p>
+        <div id="themeColors" class="field-row"></div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:14px;">Fonts</h3>
+        <div class="field-row">
+          <div class="field">
+            <label class="lbl">Heading font</label>
+            <select id="theme_fontHeading"></select>
+          </div>
+          <div class="field">
+            <label class="lbl">Body font</label>
+            <select id="theme_fontBody"></select>
+          </div>
+        </div>
+        <div style="background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:8px;">
+          <div id="fontPreviewHeading" style="font-size:1.8rem;font-weight:700;margin-bottom:4px;">
+            The quick brown fox
+          </div>
+          <div id="fontPreviewBody" style="color:var(--muted);">
+            jumps over the lazy dog. 1234567890
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:14px;">Shape & style</h3>
+        <div class="field-row">
+          <div class="field">
+            <label class="lbl">Corner radius</label>
+            <select id="theme_radius">
+              <option value="sharp">Sharp (no radius)</option>
+              <option value="rounded">Rounded</option>
+              <option value="pill">Pill (very round)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl">Button style</label>
+            <select id="theme_buttonStyle">
+              <option value="filled">Filled</option>
+              <option value="outlined">Outlined</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="panel" data-panel="services">
+      <h1>Services & Pricing</h1>
+      <p class="intro">Each service is a row in the customer form. Configure the inputs a customer fills in, and how the price is calculated from them.</p>
+      <div id="servicesList"></div>
+      <button class="btn" id="addServiceBtn">+ Add service</button>
+    </section>
+
+    <!-- DISCOUNTS -->
+    <section class="panel" data-panel="discounts">
+      <h1>Multi-Service Discounts</h1>
+      <p class="intro">When a customer selects multiple services, automatically apply a discount.</p>
+      <div class="card">
+        <div id="discountsList"></div>
+        <button class="btn subtle small" id="addDiscountBtn">+ Add discount tier</button>
+      </div>
+    </section>
+
+    <!-- PACKAGES -->
+    <section class="panel" data-panel="packages">
+      <h1>Service Packages</h1>
+      <p class="intro">Bundles you can link to directly. A link like <code>?package=p1</code> auto-selects those services.</p>
+      <div class="card">
+        <div id="packagesList"></div>
+        <button class="btn subtle small" id="addPackageBtn">+ Add package</button>
+      </div>
+    </section>
+
+    <!-- LEAD CAPTURE -->
+    <section class="panel" data-panel="leads">
+      <h1>Lead Capture</h1>
+      <p class="intro">What happens after a customer sees their quote. Collect their contact info and send it to your inbox.</p>
+
+      <div class="card">
+        <div class="field" style="display:flex;align-items:center;gap:10px;">
+          <input type="checkbox" id="lead_enabled" style="width:auto;">
+          <label for="lead_enabled" style="margin:0;font-weight:600;">Show lead capture form after quote is calculated</label>
+        </div>
+      </div>
+
+      <div id="leadConfigBlock">
+        <div class="card">
+          <h3 style="margin-bottom:14px;">Copy shown to customer</h3>
+          <div class="field">
+            <label class="lbl">Heading</label>
+            <input type="text" id="lead_heading" placeholder="Get this quote emailed to you">
+          </div>
+          <div class="field">
+            <label class="lbl">Subheading</label>
+            <input type="text" id="lead_subheading" placeholder="Enter your details and we'll follow up within 24 hours.">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="lbl">Submit button label</label>
+              <input type="text" id="lead_submitLabel" placeholder="Send me this quote">
+            </div>
+            <div class="field">
+              <label class="lbl">Success message</label>
+              <input type="text" id="lead_successMessage" placeholder="Thanks! We'll be in touch soon.">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:14px;">Fields to collect</h3>
+          <div id="leadFieldsList"></div>
+          <button class="btn subtle small" id="addLeadFieldBtn">+ Add field</button>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:14px;">Where to send submissions</h3>
+          <div class="info-box">
+            <strong>Easiest setup — Formspree:</strong> sign up at <code>formspree.io</code> (free tier works), create a form, copy its endpoint URL into the box below, and submissions will be emailed to you automatically.
+            <br><br>
+            <strong>Webhook:</strong> POSTs a JSON body to your own URL. Use with Zapier, Make, n8n, or your own backend.
+            <br><br>
+            <strong>Local only:</strong> for testing. Submissions are logged to the browser console and saved to <code>localStorage</code> under <code>quoteFormKit.leads</code>.
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="lbl">Delivery method</label>
+              <select id="lead_mode">
+                <option value="none">Local only (testing)</option>
+                <option value="formspree">Formspree</option>
+                <option value="webhook">Custom webhook</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="lbl">Endpoint URL</label>
+              <input type="text" id="lead_endpoint" placeholder="https://formspree.io/f/xxxxxxxx">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PREVIEW -->
+    <section class="panel" data-panel="preview">
+      <h1>Live Preview</h1>
+      <p class="intro">This is exactly what your customers will see. Click Save & Preview in the top bar to apply changes.</p>
+      <iframe class="preview-frame" id="previewFrame" src="../form/form.html"></iframe>
+    </section>
+
+    <!-- EXPORT -->
+    <section class="panel" data-panel="export">
+      <h1>Export</h1>
+      <p class="intro">Download your config and drop it into your site.</p>
+      <div class="card">
+        <h3>config.json</h3>
+        <p style="color:var(--muted);font-size:0.88rem;">Download this file and replace <code>src/core/config.default.json</code> in your site repo.</p>
+        <textarea id="exportJson" readonly style="min-height:280px;"></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="btn" id="downloadJsonBtn">Download config.json</button>
+          <button class="btn subtle" id="copyJsonBtn">Copy to clipboard</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Embed on your site</h3>
+        <p style="color:var(--muted);font-size:0.88rem;">Copy the <code>src/</code> folder to your web server, then link to the form:</p>
+        <textarea readonly style="min-height:60px;"><a href="/path/to/src/form/form.html">Get a Quote</a></textarea>
+      </div>
+    </section>
+
+    <!-- HELP -->
+    <section class="panel" data-panel="help">
+      <h1>How to customize</h1>
+      <div class="card">
+        <h3>1. Change services, prices, materials</h3>
+        <p>Go to <strong>Services & Pricing</strong> in the sidebar. Each service has a pricing type — pick whichever fits:</p>
+        <ul>
+          <li><strong>Flat</strong> — one fixed price (e.g., $99 for window cleaning)</li>
+          <li><strong>Per unit</strong> — price × quantity (e.g., $0.25 per sq ft)</li>
+          <li><strong>Tiered</strong> — price based on size range (e.g., "up to 1000 sqft = $275")</li>
+          <li><strong>Matrix</strong> — price depends on multiple factors combined (e.g., floors × material × size)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>2. Preview your changes</h3>
+        <p>Hit <strong>Save & Preview</strong> in the top bar. Your edits are stored in the browser so you can iterate. When ready, go to <strong>Export</strong> and download the JSON.</p>
+      </div>
+      <div class="card">
+        <h3>3. Ship to your site</h3>
+        <p>Replace <code>src/core/config.default.json</code> in the repo with the exported file, commit, push. That's it.</p>
+      </div>
+      <div class="card">
+        <h3>Packages via URL</h3>
+        <p>Packages are pre-selected bundles. Linking to <code>form.html?package=p1</code> auto-checks the services in package <code>p1</code>. Useful for marketing emails and landing page CTAs.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<input type="file" id="importFile" accept="application/json" style="display:none;">
+
+<script type="module" src="./admin.js"></script>
+</body>
+</html>

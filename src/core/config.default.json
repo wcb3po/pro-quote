@@ -1,0 +1,255 @@
+{
+  "business": {
+    "name": "Your Business Name",
+    "tagline": "Select the services you need. Get an estimate in seconds.",
+    "currency": "USD",
+    "currencySymbol": "$"
+  },
+
+  "theme": {
+    "preset": "minimal",
+    "colors": {
+      "accent":  "#1e88e5",
+      "ink":     "#0f1419",
+      "paper":   "#fafaf7",
+      "surface": "#ffffff",
+      "line":    "#e5e3dc",
+      "muted":   "#6b6b6b"
+    },
+    "fonts": {
+      "heading": "Fraunces",
+      "body":    "Inter"
+    },
+    "radius":      "rounded",
+    "buttonStyle": "filled"
+  },
+
+  "leadCapture": {
+    "enabled": true,
+    "heading": "Get this quote emailed to you",
+    "subheading": "Enter your details and we'll follow up within 24 hours.",
+    "submitLabel": "Send me this quote",
+    "successMessage": "Thanks! We'll be in touch soon.",
+    "fields": [
+      { "field": "name",    "label": "Name",        "type": "text",  "required": true },
+      { "field": "email",   "label": "Email",       "type": "email", "required": true },
+      { "field": "phone",   "label": "Phone",       "type": "tel",   "required": false },
+      { "field": "address", "label": "Property address", "type": "text", "required": false },
+      { "field": "notes",   "label": "Anything we should know?", "type": "textarea", "required": false }
+    ],
+    "delivery": {
+      "mode": "formspree",
+      "endpoint": ""
+    }
+  },
+
+  "services": [
+    {
+      "id": "home",
+      "label": "Home Cleaning",
+      "description": "Exterior house wash",
+      "inputs": [
+        {
+          "field": "floors",
+          "label": "Number of floors",
+          "type": "select",
+          "options": [
+            { "value": "1", "label": "1 floor" },
+            { "value": "2", "label": "2 floors" },
+            { "value": "3", "label": "3 floors" }
+          ]
+        },
+        {
+          "field": "material",
+          "label": "Wall material",
+          "type": "select",
+          "options": [
+            { "value": "vinyl",    "label": "Vinyl" },
+            { "value": "concrete", "label": "Concrete" },
+            { "value": "aluminum", "label": "Aluminum" },
+            { "value": "other",    "label": "Other" },
+            { "value": "stucco",   "label": "Stucco" },
+            { "value": "wood",     "label": "Wood" }
+          ]
+        },
+        {
+          "field": "size",
+          "label": "Home size (sq ft)",
+          "type": "number",
+          "min": 0
+        }
+      ],
+      "pricing": {
+        "type": "matrix",
+        "aliases": {
+          "vinyl": "std", "concrete": "std", "aluminum": "std", "other": "std",
+          "stucco": "stucco",
+          "wood": "wood"
+        },
+        "dimensions": [
+          { "field": "floors",   "values": ["1","2","3"] },
+          { "field": "material", "values": ["std","stucco","wood"] },
+          { "field": "size", "type": "range", "ranges": [
+            { "max": 1000, "key": "a" },
+            { "max": 1500, "key": "b" },
+            { "max": 2000, "key": "c" },
+            { "max": 2500, "key": "d" },
+            { "max": 3000, "key": "e" },
+            { "max": 3500, "key": "f" },
+            { "max": 4000, "key": "g" },
+            { "max": 4500, "key": "h" },
+            { "max": 5000, "key": "i" },
+            { "max": 5500, "key": "j" },
+            { "max": 6000, "key": "k" },
+            { "max": 6500, "key": "l" }
+          ]}
+        ],
+        "clampToLastRange": true,
+        "prices": {
+          "1|std|a":   150, "2|std|a":   175, "3|std|a":   200,
+          "1|stucco|a":175, "2|stucco|a":225, "3|stucco|a":250,
+          "1|wood|a":  200, "2|wood|a":  250, "3|wood|a":  300,
+
+          "1|std|b":   200, "2|std|b":   225, "3|std|b":   250,
+          "1|stucco|b":225, "2|stucco|b":275, "3|stucco|b":300,
+          "1|wood|b":  250, "2|wood|b":  300, "3|wood|b":  350,
+
+          "1|std|c":   250, "2|std|c":   275, "3|std|c":   300,
+          "1|stucco|c":275, "2|stucco|c":325, "3|stucco|c":350,
+          "1|wood|c":  300, "2|wood|c":  350, "3|wood|c":  400,
+
+          "1|std|d":   300, "2|std|d":   325, "3|std|d":   350,
+          "1|stucco|d":325, "2|stucco|d":375, "3|stucco|d":400,
+          "1|wood|d":  350, "2|wood|d":  400, "3|wood|d":  450,
+
+          "1|std|e":   350, "2|std|e":   375, "3|std|e":   400,
+          "1|stucco|e":375, "2|stucco|e":425, "3|stucco|e":450,
+          "1|wood|e":  400, "2|wood|e":  450, "3|wood|e":  500,
+
+          "1|std|f":   400, "2|std|f":   425, "3|std|f":   450,
+          "1|stucco|f":425, "2|stucco|f":475, "3|stucco|f":500,
+          "1|wood|f":  450, "2|wood|f":  500, "3|wood|f":  550,
+
+          "1|std|g":   450, "2|std|g":   475, "3|std|g":   500,
+          "1|stucco|g":475, "2|stucco|g":525, "3|stucco|g":550,
+          "1|wood|g":  500, "2|wood|g":  550, "3|wood|g":  600,
+
+          "1|std|h":   500, "2|std|h":   525, "3|std|h":   550,
+          "1|stucco|h":525, "2|stucco|h":575, "3|stucco|h":600,
+          "1|wood|h":  550, "2|wood|h":  600, "3|wood|h":  650,
+
+          "1|std|i":   550, "2|std|i":   575, "3|std|i":   600,
+          "1|stucco|i":575, "2|stucco|i":625, "3|stucco|i":650,
+          "1|wood|i":  600, "2|wood|i":  650, "3|wood|i":  700,
+
+          "1|std|j":   600, "2|std|j":   625, "3|std|j":   650,
+          "1|stucco|j":625, "2|stucco|j":675, "3|stucco|j":700,
+          "1|wood|j":  650, "2|wood|j":  700, "3|wood|j":  750,
+
+          "1|std|k":   650, "2|std|k":   675, "3|std|k":   700,
+          "1|stucco|k":675, "2|stucco|k":725, "3|stucco|k":750,
+          "1|wood|k":  700, "2|wood|k":  750, "3|wood|k":  800,
+
+          "1|std|l":   700, "2|std|l":   725, "3|std|l":   750
+        }
+      }
+    },
+
+    {
+      "id": "driveway",
+      "label": "Driveway Cleaning",
+      "inputs": [
+        { "field": "size", "label": "Driveway size (sq ft)", "type": "number", "min": 0 }
+      ],
+      "pricing": { "type": "per_unit", "inputField": "size", "rate": 0.25 }
+    },
+
+    {
+      "id": "deck",
+      "label": "Deck / Patio Cleaning",
+      "inputs": [
+        { "field": "size",    "label": "Deck size (sq ft)",     "type": "number", "min": 0 },
+        { "field": "railing", "label": "Railing length (ft)",   "type": "number", "min": 0 }
+      ],
+      "pricing": {
+        "type": "per_unit",
+        "inputField": "size",
+        "rate": 0.35,
+        "extras": [
+          { "field": "railing", "rate": 2.5 }
+        ]
+      }
+    },
+
+    {
+      "id": "gutter",
+      "label": "Gutter Cleaning",
+      "inputs": [
+        { "field": "size", "label": "Gutter length (ft)", "type": "number", "min": 0 }
+      ],
+      "pricing": { "type": "per_unit", "inputField": "size", "rate": 1.15 }
+    },
+
+    {
+      "id": "fence",
+      "label": "Fence Cleaning",
+      "inputs": [
+        {
+          "field": "sides", "label": "Sides to clean", "type": "select",
+          "options": [
+            { "value": "1", "label": "One side" },
+            { "value": "2", "label": "Both sides" }
+          ]
+        },
+        { "field": "size", "label": "Fence length (ft)", "type": "number", "min": 0 }
+      ],
+      "pricing": {
+        "type": "per_unit",
+        "inputField": "size",
+        "rate": 1.2,
+        "multipliers": [
+          { "field": "sides", "values": { "1": 1, "2": 1.6667 } }
+        ]
+      }
+    },
+
+    {
+      "id": "roof",
+      "label": "Roof Cleaning",
+      "inputs": [
+        { "field": "size", "label": "Roof size (sq ft)", "type": "number", "min": 0 }
+      ],
+      "pricing": {
+        "type": "tiered",
+        "inputField": "size",
+        "tiers": [
+          { "max": 1000, "price": 275 },
+          { "max": 1500, "price": 325 },
+          { "max": 2000, "price": 375 },
+          { "max": 2500, "price": 425 },
+          { "max": 3000, "price": 475 },
+          { "max": 3500, "price": 525 },
+          { "max": 4000, "price": 550 },
+          { "max": 4500, "price": 600 },
+          { "max": 5000, "price": 650 }
+        ]
+      }
+    }
+  ],
+
+  "discounts": [
+    { "minServices": 2, "pct": 0.05, "label": "5% off 2 services" },
+    { "minServices": 3, "pct": 0.10, "label": "10% off 3 services" },
+    { "minServices": 4, "pct": 0.15, "label": "15% off 4+ services" }
+  ],
+
+  "packages": [
+    { "id": "p1",  "label": "House + Roof",               "services": ["home","roof"] },
+    { "id": "p2",  "label": "House + Gutters",            "services": ["home","gutter"] },
+    { "id": "p3",  "label": "Roof + Gutters",             "services": ["roof","gutter"] },
+    { "id": "p4",  "label": "House + Roof + Gutters",     "services": ["home","roof","gutter"] },
+    { "id": "p5",  "label": "House + Roof + Deck",        "services": ["home","roof","deck"] },
+    { "id": "p10", "label": "House + Driveway",           "services": ["home","driveway"] },
+    { "id": "p19", "label": "Full Exterior",              "services": ["home","roof","gutter","driveway","deck","fence"] }
+  ]
+}

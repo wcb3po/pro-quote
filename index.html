@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quote Form Kit</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #0d1117;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+  }
+  .card-container { max-width: 900px; width: 100%; }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.5rem, 7vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0 0 12px;
+  }
+  h1 span { color: #1e88e5; }
+  .lead { color: rgba(255,255,255,0.7); font-size: 1.15rem; margin-bottom: 48px; max-width: 560px; }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+  .entry {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 28px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.18s ease;
+  }
+  .entry:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: #1e88e5;
+    transform: translateY(-2px);
+  }
+  .entry h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+  .entry p { color: rgba(255,255,255,0.65); margin: 0; font-size: 0.95rem; }
+  .arrow { float: right; color: #1e88e5; font-size: 1.4rem; }
+  footer { margin-top: 40px; color: rgba(255,255,255,0.4); font-size: 0.88rem; }
+  footer a { color: rgba(255,255,255,0.7); }
+</style>
+</head>
+<body>
+<div class="card-container">
+  <h1>Quote <span>Kit</span></h1>
+  <p class="lead">A fully customizable instant-quote form. Edit services, pricing, and branding through a visual admin panel — no code changes needed.</p>
+
+  <div class="grid">
+    <a class="entry" href="src/admin/admin.html">
+      <span class="arrow">→</span>
+      <h2>Admin Panel</h2>
+      <p>Visually configure services, pricing rules, discounts, and packages.</p>
+    </a>
+    <a class="entry" href="src/form/form.html">
+      <span class="arrow">→</span>
+      <h2>Customer Form</h2>
+      <p>The live quote form your customers will see.</p>
+    </a>
+  </div>
+
+  <footer>Start with the admin panel to customize, then embed <code>src/form/form.html</code> in your site. See <a href="README.md">README</a> for setup.</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instant Quote</title>
+<style>
+  /* =========================================================
+     Theme variables — overridden at runtime from config.theme.
+     The key insight: --ink is the text color. On light themes
+     it's dark, on dark themes it's light. Everything else
+     (borders, inputs, cards) references these variables, so
+     changing the theme swaps the whole look.
+     ========================================================= */
+  :root {
+    --accent: #1e88e5;
+    --ink: #0f1419;
+    --paper: #fafaf7;
+    --surface: #ffffff;
+    --line: #e5e3dc;
+    --muted: #6b6b6b;
+    --r-card: 10px;
+    --r-btn: 8px;
+    --r-input: 7px;
+    --f-heading: 'Fraunces', serif;
+    --f-body: 'Inter', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--f-body);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px; }
+
+  h1 {
+    font-family: var(--f-heading);
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+  .subtitle { color: var(--muted); font-size: 1.05rem; margin-bottom: 40px; }
+
+  .step-label {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  /* Service cards */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .service-card {
+    border: 1.5px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 18px 16px;
+    cursor: pointer;
+    background: var(--surface);
+    color: var(--ink);
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+  .service-card:hover { border-color: var(--accent); }
+  .service-card.selected {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
+  }
+  .service-card input[type="checkbox"] { display: none; }
+  .service-card .name { font-weight: 600; font-size: 1.02rem; }
+  .service-card .desc { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+  .service-card .check {
+    float: right;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--surface);
+    font-size: 12px; font-weight: bold;
+  }
+  .service-card.selected .check { background: var(--accent); border-color: var(--accent); }
+  .service-card.selected .check::before { content: "✓"; }
+
+  /* Buttons */
+  .btn {
+    background: var(--ink);
+    color: var(--paper);
+    border: 1.5px solid transparent;
+    padding: 14px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--r-btn);
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.1s ease, filter 0.1s ease;
+  }
+  .btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+  .btn.primary { background: var(--accent); color: white; }
+  .btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+
+  body.btns-outlined .btn {
+    background: transparent; color: var(--ink); border-color: var(--ink);
+  }
+  body.btns-outlined .btn.primary {
+    background: transparent; color: var(--accent); border-color: var(--accent);
+  }
+  body.btns-outlined .btn.primary:hover { background: var(--accent); color: white; }
+
+  /* Detail blocks */
+  .detail-block {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 24px;
+    margin-bottom: 14px;
+  }
+  .detail-block h3 {
+    margin: 0 0 16px;
+    font-family: var(--f-heading);
+    font-weight: 600;
+    font-size: 1.35rem;
+    color: var(--ink);
+  }
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--muted);
+  }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1.5px solid var(--line);
+    border-radius: var(--r-input);
+    font-size: 1rem;
+    font-family: inherit;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .field textarea { min-height: 90px; resize: vertical; }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: var(--accent);
+  }
+  .field.required label::after { content: " *"; color: var(--accent); }
+
+  /* Quote box */
+  .quote-box {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: var(--r-card);
+    padding: 32px;
+    margin-top: 32px;
+  }
+  .line-item {
+    display: flex; justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--paper) 18%, transparent);
+    font-size: 0.98rem;
+  }
+  .line-item:last-of-type { border-bottom: 0; }
+  .discount-row { color: #8fd4a8; }
+  .total-row {
+    display: flex; justify-content: space-between;
+    margin-top: 18px; padding-top: 18px;
+    border-top: 2px solid color-mix(in srgb, var(--paper) 30%, transparent);
+    font-family: var(--f-heading);
+    font-size: 1.6rem; font-weight: 600;
+  }
+  .savings-badge {
+    display: inline-block;
+    background: #8fd4a8;
+    color: #1a3022;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem; font-weight: 600;
+    margin-top: 10px;
+  }
+
+  /* Lead capture */
+  #leadCapture {
+    margin-top: 28px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 28px;
+  }
+  #leadCapture h2 {
+    font-family: var(--f-heading);
+    margin: 0 0 6px;
+    color: var(--ink);
+    font-size: 1.5rem;
+  }
+  #leadCapture p.lead-sub {
+    color: var(--muted);
+    margin: 0 0 18px;
+    font-size: 0.95rem;
+  }
+  .lead-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .lead-grid .field.full { grid-column: 1 / -1; }
+  @media (max-width: 520px) {
+    .lead-grid { grid-template-columns: 1fr; }
+    .lead-grid .field.full { grid-column: auto; }
+  }
+
+  .success-panel {
+    background: color-mix(in srgb, #8fd4a8 20%, var(--surface));
+    border: 1px solid #8fd4a8;
+    color: var(--ink);
+    padding: 24px;
+    border-radius: var(--r-card);
+    text-align: center;
+    font-weight: 500;
+    margin-top: 24px;
+  }
+
+  .actions { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+  .hidden { display: none; }
+  .empty-hint {
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    border: 1.5px dashed var(--line);
+    border-radius: var(--r-card);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1 id="businessName">Instant Quote</h1>
+  <p class="subtitle" id="tagline">Select the services you need. Get an estimate in seconds.</p>
+
+  <section id="step1">
+    <div class="step-label">Step 1 · Choose services</div>
+    <div class="services-grid" id="servicesGrid"></div>
+    <button class="btn primary" id="nextBtn">Continue →</button>
+  </section>
+
+  <section id="step2" class="hidden">
+    <div class="step-label">Step 2 · Enter details</div>
+    <div id="detailsContainer"></div>
+    <div class="actions">
+      <button class="btn ghost" id="backBtn">← Back</button>
+      <button class="btn primary" id="quoteBtn">Calculate Quote</button>
+    </div>
+
+    <div id="quoteBox" class="quote-box hidden">
+      <div id="lineItems"></div>
+      <div id="discountRow"></div>
+      <div class="total-row">
+        <span>Total</span>
+        <span id="totalValue">$0.00</span>
+      </div>
+      <div id="savingsBadge"></div>
+    </div>
+
+    <section id="leadCapture" class="hidden">
+      <h2 id="leadHeading">Get this quote emailed to you</h2>
+      <p class="lead-sub" id="leadSubheading">Enter your details and we'll follow up.</p>
+      <div class="lead-grid" id="leadFields"></div>
+      <div class="actions">
+        <button class="btn primary" id="leadSubmitBtn">Send me this quote</button>
+      </div>
+      <div id="leadError" style="color:#d1453b; margin-top:10px; font-size:0.88rem;"></div>
+    </section>
+
+    <div id="leadSuccess" class="success-panel hidden"></div>
+  </section>
+
+</div>
+
+<script type="module" src="./form.js"></script>
+</body>
+</html>
